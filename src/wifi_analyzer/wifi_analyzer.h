@@ -4,8 +4,7 @@
 #include "main.h"
 #include <WiFi.h>
 
-class WiFiAnalyzer
-{
+class WiFiAnalyzer {
 public:
   WiFiAnalyzer();
   void scan_networks();
