@@ -14,7 +14,21 @@ QueueHandle_t wifi_ap_queue;
 QueueHandle_t ui_event_queue;
 SemaphoreHandle_t oled_mutex;
 
-void setup() {
+// Button instances
+ButtonDebouncer btn_up(BUTTON_UP_PIN, UI_EVENT_UP);
+ButtonDebouncer btn_down(BUTTON_DOWN_PIN, UI_EVENT_DOWN);
+ButtonDebouncer btn_select(BUTTON_SELECT_PIN, UI_EVENT_SELECT);
+
+// OLED instance
+OLEDDriver oled;
+
+void init_buttons()
+{
+  // Buttons are initialized in their constructor
+}
+
+void setup()
+{
   Serial.begin(115200);
   printf("\n\nBW16 Wi-Fi Analyzer Firmware\n");
   printf("Initializing...\n");
@@ -26,7 +40,7 @@ void setup() {
 
   // Initialize hardware
   init_buttons();
-  oled_init();
+  oled.init();
 
   // Create FreeRTOS tasks
   xTaskCreate(wifi_task, "WiFiTask", 4096, NULL, 2, &wifi_task_handle);
@@ -36,38 +50,44 @@ void setup() {
   printf("Initialization complete. Starting scheduler...\n");
 }
 
-void loop() {
+void loop()
+{
   // Not used - FreeRTOS scheduler handles tasks
   vTaskDelay(portMAX_DELAY);
 }
 
 // FreeRTOS Tasks
-void wifi_task(void *pvParameters) {
+void wifi_task(void *pvParameters)
+{
   printf("WiFi Task started\n");
   WiFiAnalyzer analyzer;
-  
-  while (1) {
+
+  while (1)
+  {
     analyzer.scan_networks();
     vTaskDelay(10000 / portTICK_PERIOD_MS); // Scan every 10 seconds
   }
 }
 
-void ui_task(void *pvParameters) {
+void ui_task(void *pvParameters)
+{
   printf("UI Task started\n");
   UIManager ui_manager;
-  
-  while (1) {
+
+  while (1)
+  {
     ui_manager.handle_events();
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }
 }
 
-void uart_task(void *pvParameters) {
+void uart_task(void *pvParameters)
+{
   printf("UART Task started\n");
-  
-  while (1) {
+
+  while (1)
+  {
     // Handle communication with secondary BW16
-    // Placeholder for future implementation
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }

@@ -6,30 +6,36 @@
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
+#include <WiFi.h>
 
 // Button GPIO Pins
-#define BUTTON_UP_PIN    10
-#define BUTTON_DOWN_PIN  11
+#define BUTTON_UP_PIN 10
+#define BUTTON_DOWN_PIN 11
 #define BUTTON_SELECT_PIN 12
 
 // OLED SPI Pins
-#define OLED_CS_PIN     5
-#define OLED_DC_PIN     6
-#define OLED_RESET_PIN  7
-#define OLED_MOSI_PIN   MOSI
-#define OLED_SCK_PIN    SCK
+#define OLED_CS_PIN 5
+#define OLED_DC_PIN 6
+#define OLED_RESET_PIN 7
+#define OLED_MOSI_PIN MOSI
+#define OLED_SCK_PIN SCK
+
+// WiFi constants for BW16
+#define RTW_IEEE80211_BAND_5GHZ 1
 
 // WiFi AP Information Structure
-typedef struct {
-  char ssid[33];
+typedef struct
+{
+  char ssid[33]; // Maximum SSID length + null terminator
   int8_t rssi;
   uint8_t channel;
   bool is_5ghz;
-  uint8_t bssid[6];
+  uint8_t bssid[6]; // MAC address
 } WiFiAPInfo;
 
 // UI Events
-typedef enum {
+typedef enum
+{
   UI_EVENT_NONE,
   UI_EVENT_UP,
   UI_EVENT_DOWN,
