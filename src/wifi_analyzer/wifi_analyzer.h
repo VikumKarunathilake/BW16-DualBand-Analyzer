@@ -4,7 +4,8 @@
 #include "main.h"
 #include <WiFi.h>
 
-class WiFiAnalyzer {
+class WiFiAnalyzer
+{
 public:
   WiFiAnalyzer();
   void scan_networks();
@@ -14,6 +15,7 @@ public:
 private:
   void process_scan_results(int networksFound);
   void print_ap_info(const WiFiAPInfo &ap);
+  rtw_scan_result_t *scan_results;
 };
 
 #endif // WIFI_ANALYZER_H
