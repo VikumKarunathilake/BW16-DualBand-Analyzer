@@ -59,6 +59,7 @@ void loop()
 // FreeRTOS Tasks
 void wifi_task(void *pvParameters)
 {
+  (void)pvParameters;
   printf("WiFi Task started\n");
   WiFiAnalyzer analyzer;
 

@@ -96,10 +96,13 @@ void OLEDDriver::draw_ap_list(const WiFiAPInfo *aps, int count, int selected_ind
       display.print(aps[i].ssid);
 
       display.setCursor(5, y_pos + 8);
-      display.printf("Ch:%d %s %ddBm",
-                     aps[i].channel,
-                     aps[i].is_5ghz ? "5G" : "2G",
-                     aps[i].rssi);
+      display.print("Ch:");
+      display.print(ap.channel);
+      display.print(" ");
+      display.print(ap.ssid);
+      display.print(" ");
+      display.print(ap.rssi);
+      display.println("dBm");
     }
 
     // Mirror to U8g2 for demonstration
