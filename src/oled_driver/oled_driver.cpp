@@ -4,29 +4,33 @@
 extern SemaphoreHandle_t oled_mutex;
 
 OLEDDriver::OLEDDriver() 
-  : display(OLED_CS_PIN, OLED_DC_PIN, OLED_MOSI_PIN, OLED_SCK_PIN, OLED_RESET_PIN) {}
+  : display(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, OLED_CS_PIN, OLED_DC_PIN, OLED_RESET_PIN) {}
 
 void OLEDDriver::init() {
   if (xSemaphoreTake(oled_mutex, portMAX_DELAY) == pdTRUE) {
     display.begin();
-    display.fillScreen(BLACK);
-    display.setTextColor(WHITE);
+    display.setRotation(1); // Adjust rotation if needed
+    display.clearDisplay();
+    display.setTextColor(SH110X_WHITE);
     display.setTextSize(1);
+    display.cp437(true);
     xSemaphoreGive(oled_mutex);
   }
 }
 
 void OLEDDriver::clear() {
   if (xSemaphoreTake(oled_mutex, portMAX_DELAY) == pdTRUE) {
-    display.fillScreen(BLACK);
+    display.clearDisplay();
     xSemaphoreGive(oled_mutex);
   }
 }
 
 void OLEDDriver::draw_header(const char *title) {
-  display.fillRect(0, 0, 128, 12, BLUE);
+  display.fillRect(0, 0, SCREEN_WIDTH, 12, SH110X_WHITE);
+  display.setTextColor(SH110X_BLACK);
   display.setCursor(5, 2);
   display.print(title);
+  display.setTextColor(SH110X_WHITE);
 }
 
 void OLEDDriver::draw_ap_list(const WiFiAPInfo *aps, int count, int selected_index) {
@@ -39,10 +43,10 @@ void OLEDDriver::draw_ap_list(const WiFiAPInfo *aps, int count, int selected_ind
       
       // Highlight selected item
       if (i == selected_index) {
-        display.fillRect(0, y_pos - 2, 128, 14, WHITE);
-        display.setTextColor(BLACK);
+        display.fillRect(0, y_pos - 2, SCREEN_WIDTH, 14, SH110X_WHITE);
+        display.setTextColor(SH110X_BLACK);
       } else {
-        display.setTextColor(WHITE);
+        display.setTextColor(SH110X_WHITE);
       }
       
       display.setCursor(5, y_pos);
@@ -58,6 +62,7 @@ void OLEDDriver::draw_ap_list(const WiFiAPInfo *aps, int count, int selected_ind
       display.print("dBm");
     }
     
+    display.display();
     xSemaphoreGive(oled_mutex);
   }
 }
@@ -96,6 +101,7 @@ void OLEDDriver::draw_ap_details(const WiFiAPInfo &ap) {
     display.setCursor(5, 110);
     display.print("[SELECT] to deauth");
     
+    display.display();
     xSemaphoreGive(oled_mutex);
   }
 }
